@@ -1,35 +1,27 @@
-var checked = new Array();
-function print() {
-    var e = document.getElementById("first");
-    var x = e.firstChild;
-    var y = e.lastChild;
-    var len = -1;
-    var elements = new Array();
-    move_around(e);
-    function move_around(el) {
-        if (len == e.childElementCount) {
-            return 0;
-        }
-        elements.push(el);
-        (el == "head" || el == "body") ? checked.push(el) : 0;
-        if (check(el)) {
-            move_around(el.firstChild);
-        }
-        else if (check(el)) {
-            move_around(el.nextSibling);
+var a = new Array("area", "base", "basefont", "bgsound", "br", "col", "command", "embed", "hr", "img", "input", "isindex", "keygen", "link", "meta", "param", "source", "track", "wbr");
+function generateTree(elem) {
+    var child = elem.firstElementChild;
+    var ul = document.createElement('ul');
+    while (child) {
+        if (a.indexOf(child.tagName.toLowerCase()) !== -1) {
+            console.log('Lonely tag', child.tagName);
+            var flag = false;
         }
         else {
-            move_around.apply(el.previosSibling);
+            console.log('Open', child.tagName);
+            var flag = true;
         }
+        var li = document.createElement('li');
+        li.innerHTML = child.tagName;
+        var list = generateTree(child);
+        li.appendChild(list);
+        ul.appendChild(li);
+        if (flag) {
+            console.log('Close', child.tagName);
+        }
+        child = child.nextElementSibling;
     }
-}
-
-function check(elem) {
-    if ((elem.childElementCount > 0) && !(checked.includes(elem)) && (elem != '#text')) {
-        return true;
-    }
-    else if ((elem.nextSibling) != null) {
-        return true;
-    }
-    return false;
+    elem.appendChild(ul);
+    document.getElementById('result').style.display = "none";
+    return ul;
 }
